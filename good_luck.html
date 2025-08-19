@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Luck Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.5s ease;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+            will-change: opacity, transform;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 2;
+            position: relative;
+            max-width: 700px;
+            margin: 20px;
+            transform: translateZ(0);
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.4); }
+            to { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 25px rgba(255, 255, 255, 0.6); }
+        }
+
+        .luck-display {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+            font-size: 1.2em;
+            color: #333;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            transform: translateZ(0);
+        }
+
+        .game-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        .memory-card {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border: 2px solid white;
+            transform: translateZ(0);
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05) translateZ(0);
+        }
+
+        .memory-card.flipped {
+            background: linear-gradient(45deg, #a8edea, #fed6e3);
+        }
+
+        .memory-card.matched {
+            background: linear-gradient(45deg, #d299c2, #fef9d7);
+            animation: celebration 0.4s ease;
+        }
+
+        @keyframes celebration {
+            0%, 100% { transform: scale(1) translateZ(0); }
+            50% { transform: scale(1.1) translateZ(0); }
+        }
+
+        .luck-button {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .luck-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .surprise-box {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 10px;
+            margin: 20px auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            animation: mysterious-glow 3s ease-in-out infinite alternate;
+            transition: transform 0.3s ease;
+            transform: translateZ(0);
+        }
+
+        .surprise-box:hover {
+            transform: scale(1.05) translateZ(0);
+        }
+
+        @keyframes mysterious-glow {
+            0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+            100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+        }
+
+        .symbols {
+            font-size: 2em;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .symbol {
+            display: inline-block;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            transform: translateZ(0);
+        }
+
+        .symbol:hover {
+            transform: scale(1.1) translateZ(0);
+        }
+
+        .symbol:nth-child(2) { animation-delay: 0.4s; }
+        .symbol:nth-child(3) { animation-delay: 0.8s; }
+        .symbol:nth-child(4) { animation-delay: 1.2s; }
+        .symbol:nth-child(5) { animation-delay: 1.6s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) translateZ(0); }
+            50% { transform: translateY(-8px) translateZ(0); }
+        }
+
+        .score {
+            color: white;
+            font-size: 1.2em;
+            margin: 10px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .confetti {
+            position: fixed;
+            background: #ff6b6b;
+            width: 8px;
+            height: 8px;
+            animation: confetti-fall 2s linear infinite;
+            z-index: 3;
+            will-change: transform;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .game-title {
+            color: white;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .floating-element {
+            position: fixed;
+            font-size: 1.5em;
+            z-index: 4;
+            pointer-events: none;
+            animation: float-up 2s ease-out forwards;
+            will-change: transform;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) translateZ(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-80vh) translateZ(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <h1>🍀 Good Luck Adventure 🍀</h1>
+        
+        <div class="symbols">
+            <span class="symbol" onclick="addLuck('🍀')">🍀</span>
+            <span class="symbol" onclick="addLuck('🌟')">🌟</span>
+            <span class="symbol" onclick="addLuck('🦄')">🦄</span>
+            <span class="symbol" onclick="addLuck('💎')">💎</span>
+            <span class="symbol" onclick="addLuck('🌈')">🌈</span>
+        </div>
+
+        <div class="luck-display" id="luckDisplay">
+            Welcome to your personalized luck adventure! Try the games below! 🎮
+        </div>
+
+        <button class="luck-button" onclick="generateLuck()">Generate Good Luck ✨</button>
+        
+        <div class="surprise-box" onclick="openSurpriseBox()" id="surpriseBox">
+            📦
+        </div>
+        <p style="color: white; margin-top: 10px;">Click the mystery box for surprises! 🎁</p>
+
+        <!-- Memory Game -->
+        <div class="game-section">
+            <div class="game-title">🧠 Memory Luck Game</div>
+            <div class="score" id="memoryScore">Matches: 0/8 | Attempts: 0</div>
+            <div class="memory-game" id="memoryGame"></div>
+            <button class="luck-button" onclick="resetMemoryGame()">New Game 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const luckMessages = [
+            "🌟 Something amazing is about to happen in your life!",
+            "🍀 The universe has beautiful plans for you!",
+            "✨ Your next chapter will be filled with joy and success!",
+            "🌈 Incredible opportunities are aligning perfectly for you!",
+            "💫 You're destined for wonderful things!",
+            "🦄 Magic is real, and it's working in your favor!",
+            "💎 You shine so bright, nothing can dim your light!",
+            "🌸 Beautiful new beginnings are calling your name!",
+            "🎯 Everything you dream of is becoming reality!",
+            "🌙 The stars are writing your success story!"
+        ];
+
+        const surprises = [
+            "🎉 SURPRISE! You just unlocked unlimited good vibes!",
+            "💝 You found a hidden treasure of positivity!",
+            "🎊 Congratulations! You're officially awesome!",
+            "🌠 A shooting star just granted your secret wish!",
+            "🎁 You discovered the secret to happiness: being you!",
+            "🦋 Your transformation into your best self starts now!",
+            "🌺 You just bloomed into something extraordinary!",
+            "⚡ Lightning strike of good fortune incoming!"
+        ];
+
+        let memoryCards = [];
+        let flippedCards = [];
+        let matches = 0;
+        let attempts = 0;
+        let surpriseCount = 0;
+        let isAnimating = false;
+
+        const memorySymbols = ['🍀', '🌟', '🦄', '💎', '🌈', '🦋', '🌸', '⭐'];
+
+        // Throttled confetti creation
+        function createConfetti() {
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            confetti.remove();
+                        }
+                    }, 2000);
+                }, i * 50);
+            }
+            
+            setTimeout(() => {
+                isAnimating = false;
+            }, 1000);
+        }
+
+        function generateLuck() {
+            const randomMessage = luckMessages[Math.floor(Math.random() * luckMessages.length)];
+            const display = document.getElementById('luckDisplay');
+            
+            display.style.transform = 'scale(0.9)';
+            display.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                display.textContent = randomMessage;
+                display.style.transform = 'scale(1)';
+                display.style.opacity = '1';
+                display.style.background = `linear-gradient(45deg, hsl(${Math.random() * 360}, 70%, 90%), hsl(${Math.random() * 360}, 70%, 95%))`;
+                
+                createConfetti();
+            }, 150);
+        }
+
+        function openSurpriseBox() {
+            const box = document.getElementById('surpriseBox');
+            const display = document.getElementById('luckDisplay');
+            surpriseCount++;
+            
+            box.style.transform = 'scale(0.8) rotate(180deg)';
+            
+            setTimeout(() => {
+                const surprise = surprises[Math.floor(Math.random() * surprises.length)];
+                display.textContent = surprise;
+                display.style.background = `linear-gradient(45deg, hsl(${Math.random() * 360}, 80%, 85%), hsl(${Math.random() * 360}, 80%, 90%))`;
+                
+                box.style.transform = 'scale(1) rotate(0deg)';
+                box.textContent = ['🎁', '💝', '🎉', '🌟', '✨'][Math.floor(Math.random() * 5)];
+                
+                createConfetti();
+                
+                // Special surprise every 3rd click
+                if (surpriseCount % 3 === 0) {
+                    setTimeout(() => {
+                        changeBackgroundColor();
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        function initMemoryGame() {
+            const gameContainer = document.getElementById('memoryGame');
+            gameContainer.innerHTML = '';
+            memoryCards = [];
+            flippedCards = [];
+            matches = 0;
+            attempts = 0;
+            
+            // Create pairs of cards
+            const cardSymbols = [...memorySymbols, ...memorySymbols];
+            cardSymbols.sort(() => Math.random() - 0.5);
+            
+            cardSymbols.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.textContent = '?';
+                card.dataset.symbol = symbol;
+                card.dataset.index = index;
+                card.onclick = () => flipCard(card);
+                
+                memoryCards.push(card);
+                gameContainer.appendChild(card);
+            });
+            
+            updateMemoryScore();
+        }
+
+        function flipCard(card) {
+            if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) {
+                return;
+            }
+            
+            card.classList.add('flipped');
+            card.textContent = card.dataset.symbol;
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                attempts++;
+                setTimeout(checkMatch, 800);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.dataset.symbol === card2.dataset.symbol) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matches++;
+                createConfetti();
+                
+                if (matches === 8) {
+                    setTimeout(() => {
+                        document.getElementById('luckDisplay').textContent = "🎉 You won! Your memory is as brilliant as your future! 🎉";
+                        createConfetti();
+                    }, 300);
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '?';
+                card2.textContent = '?';
+            }
+            
+            flippedCards = [];
+            updateMemoryScore();
+        }
+
+        function updateMemoryScore() {
+            document.getElementById('memoryScore').textContent = `Matches: ${matches}/8 | Attempts: ${attempts}`;
+        }
+
+        function resetMemoryGame() {
+            initMemoryGame();
+        }
+
+        function addLuck(symbol) {
+            const display = document.getElementById('luckDisplay');
+            createFloatingSymbol(symbol);
+            
+            const affirmations = [
+                `${symbol} You're absolutely incredible!`,
+                `${symbol} The best is yet to come!`,
+                `${symbol} You deserve all the happiness!`,
+                `${symbol} Your energy is contagious!`,
+                `${symbol} You're capable of amazing things!`
+            ];
+            
+            const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
+            display.textContent = randomAffirmation;
+            display.style.background = `linear-gradient(45deg, hsl(${Math.random() * 360}, 70%, 90%), hsl(${Math.random() * 360}, 70%, 95%))`;
+        }
+
+        function changeBackgroundColor() {
+            const colors = [
+                'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(45deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(45deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(45deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(45deg, #fa709a 0%, #fee140 100%)'
+            ];
+            
+            document.body.style.background = colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function createFloatingSymbol(symbol) {
+            const floatingDiv = document.createElement('div');
+            floatingDiv.textContent = symbol;
+            floatingDiv.className = 'floating-element';
+            floatingDiv.style.left = Math.random() * window.innerWidth + 'px';
+            floatingDiv.style.top = window.innerHeight + 'px';
+            
+            document.body.appendChild(floatingDiv);
+            
+            setTimeout(() => {
+                if (floatingDiv.parentNode) {
+                    floatingDiv.remove();
+                }
+            }, 2000);
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            // Reduced star count for better performance
+            for (let i = 0; i < 25; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Initialize
+        createStars();
+        initMemoryGame();
+
+        // Reduced frequency of random events
+        setInterval(() => {
+            if (Math.random() > 0.9) {
+                changeBackgroundColor();
+            }
+        }, 45000);
+    </script>
+</body>
+</html>
